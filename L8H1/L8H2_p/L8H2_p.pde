@@ -3,12 +3,11 @@ import processing.serial.*;
 Serial serial;
 int x, y, s, x_high_byte, x_low_byte, y_high_byte, y_low_byte;
 
-int w;
-int vw;
-
+int shootx, shooty;
 int gen;
-
 int clicked;
+
+int destroyed;
 
 void setup()
 {
@@ -19,10 +18,10 @@ void setup()
   
   s = 1;
   
-  w = 0;
-  vw = 25;
-
-  gen = 1;
+  shootx = 0;
+  shooty = 800;
+  
+  gen = 0;
 }
 
 void draw()
@@ -41,42 +40,41 @@ void draw()
     serial.write(s);
   }
 
-  if (gen==0)
+  background(0, 0, 0);
+  stroke(0, 0, 0);
+  fill(255, 255, 255);
+  ellipse(x, 800, 50, 50);
+
+  if (clicked == 1)
   {
-    background(255, 255, 255);
-    stroke(0, 0, 0);
-    fill(0, 0, 0);
-    ellipse(x, y, w, w);
-    if (w<=100 || clicked == 1)
-    {
-      w+=vw;
-    }
-    if (w>=2500)
-    {
-      w=0;
-      gen=1;
-      clicked = 0;
-    }
+    shootx = x;
+    gen = 1;
+    clicked = 0;
   }
   
-  if (gen==1)
+  if (gen == 1)
   {
-    background(0, 0, 0);
-    stroke(0, 0, 0);
+    stroke(255, 255, 255);
     fill(255, 255, 255);
-    ellipse(x, y, w, w);
-    if (w<=100 || clicked == 1)
-    {
-      w+=vw;
-    }
-    if (w>=2500)
-    {
-      w=0;
-      gen=0;
-      clicked = 0;
-    }
+    ellipse(shootx, shooty, 20, 20);
+    shooty -= 10;
+  }
+  
+  if (shooty <= 10 || destroyed == 1)
+  {
+    gen = 0;
+    shooty = 800;
   }
 
+  if (destroyed != 1)
+  {
+    rect(400, 200, 100, 50);
+  }
+  
+  if (shootx >= 350 && shootx <= 450 && shooty <= 225)
+  {
+    destroyed = 1;
+  }
 }
 
 void mousePressed()
